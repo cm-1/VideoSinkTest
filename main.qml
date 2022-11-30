@@ -1,5 +1,7 @@
 import QtQuick
+import QtQuick.Dialogs
 import QtMultimedia
+
 import FrameProcessorLib 1.0
 
 Window {
@@ -12,14 +14,26 @@ Window {
     Text {
         anchors.left: parent.left
         anchors.top: parent.top
-        text: "Click anywhere to start/restart vid!"
+        text: "Click anywhere to open a vid!"
+    }
+
+    // On Android, using a video file from inside a .qrc doesn't work.
+    // This was the fastest workaround.
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a file"
+        onAccepted: {
+            mediaplayer.stop()
+            mediaplayer.source = fileDialog.currentFile
+            mediaplayer.play()
+        }
     }
 
     // Extends MediaPlayer to process frames and send
     // them to a new VideoSink.
     FrameProcessor {
         id: mediaplayer
-        source:"qrc:/videoFiles/FrameNumRender.mp4"
+        //source:"qrc:/videoFiles/FrameNumRender.mp4"
         videoOutput: videoOutputLeft
         audioOutput: AudioOutput {}
 
@@ -48,7 +62,9 @@ Window {
     // video playback.
     MouseArea {
         anchors.fill: parent
-        onPressed: mediaplayer.play()
+        onPressed: {
+            fileDialog.open();
+        }
     }
 
 }

@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>videoFiles/QuickRender.mp4</file>
-        <file>videoFiles/FrameNumRender.mp4</file>
-    </qresource>
-</RCC>

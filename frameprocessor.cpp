@@ -46,7 +46,7 @@ void FrameProcessor::processFrame(const QVideoFrame &frame)
         // This check is probably unnecessary for a fixed video file, but if I
         // change the code in the future, this might help me remember why
         // things might suddenly be broken then.
-        if (frame.pixelFormat() == QVideoFrameFormat::Format_BGRA8888) {
+        if (frame.pixelFormat() == QVideoFrameFormat::Format_BGRA8888 || frame.pixelFormat() == QVideoFrameFormat::Format_RGBA8888) {
             // Because frame is const, we need to perform a shallow copy
             // before we can even do a ReadOnly mapping.
             QVideoFrame shallowCopy(frame);
@@ -79,6 +79,19 @@ void FrameProcessor::processFrame(const QVideoFrame &frame)
                         fData[i] = origData[i];
                     }
                 }
+                // I've encoded the frame number into one of the sample vids as
+                // the length of a black bar. This can be used to tell if the
+                // video is being fully processed.
+                int barPixels = -1;
+                int idx1D = frame.width() * (frame.height() - 1) * 4;
+                int observedVal = 0;
+                while (observedVal < 75 && barPixels < frame.width() - 2) {
+                    observedVal = origData[idx1D] + origData[idx1D + 1] + origData[idx1D + 2];
+                    fData[idx1D] = 255;
+                    idx1D += 4;
+                    barPixels++;
+                }
+                qDebug() << "barPixels:" << barPixels;
                 // Now some cleanup.
                 f.unmap();
                 shallowCopy.unmap();
@@ -95,7 +108,8 @@ void FrameProcessor::processFrame(const QVideoFrame &frame)
             }
         }
         else {
-            qDebug() << "Format wasn't the expected BGRA8888 for frame" << framesProcessed;
+            qDebug() << "Format wasn't the expected BGRA8888 or RGBA8888 for frame" << framesProcessed;
+            qDebug() << "Instead, format was:" << frame.pixelFormat();
         }
     }
     else {

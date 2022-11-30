@@ -8,8 +8,9 @@ call a frame-processing slot on each new frame (via the `videoFrameChanged` sign
 that edits the frame and sends it to a different QVideoSink.
 
 Even if processing takes a long time, every frame of video will be processed,
-in order. They do not all _display_ in the final QML VideoOutput, unfortunately,
-but one can show, by saving the resulting frames to disk and via `qDebug()` statements,
+in order. They do not all _display_ in the final QML VideoOutput, unfortunately;
+especially on Android, where _none_ of the frames except the first and last display.
+Still, one can show, by saving the resulting frames to disk and via `qDebug()` statements,
 that each one is still being processed.
 
 ## Credits

@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 COMPONENTS Core Quick Multimedia REQUIRED)
 
 qt_add_executable(appVideoSinkFrameGrabbing
-    main.cpp frameprocessor.h frameprocessor.cpp videos.qrc
+    main.cpp frameprocessor.h frameprocessor.cpp #videos.qrc
 )
 
 qt_add_qml_module(appVideoSinkFrameGrabbing
